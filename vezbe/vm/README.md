@@ -1,4 +1,4 @@
-### Instalacija virtualne mašine
+### Instalacija virtualne maÅ¡ine
 
 1. Instalirati **Oracle VM VirtualBox (ver 5.x)**.
 
@@ -12,4 +12,9 @@
 
 6. Izabrati **Use an existing virtual hard disk file** i sa diska odabrati datoteku **ftn-ai-lab-2016-vm.vdi** -> Create.
 
-7. Pokrenuti AnacondaVM virtualnu mašinu.
+7. Pokrenuti **ftn-ai-lab-2016-vm** virtualnu maÅ¡inu.
+
+#### Kredencijali korisnika
+
+username: student
+password: student

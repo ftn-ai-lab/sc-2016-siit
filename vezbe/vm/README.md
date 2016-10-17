@@ -16,6 +16,13 @@
 
 #### Kredencijali korisnika
 
-username: student
+*username*: student
 
-password: student
+*password*: student
+
+### Šta se nalazi u VM?
+
+* Linux Mint 17.3
+* Python 2.7 + Anaconda 4.2.0
+* Tensorflow 0.11
+* Keras (bleeding-edge verzija sa git-a)

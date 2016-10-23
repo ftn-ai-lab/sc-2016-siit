@@ -9,7 +9,7 @@ import numpy as np
 from skimage.color import rgb2gray
 from skimage.io import imread
 from skimage.filters import threshold_adaptive
-from skimage.morphology import opening, disk
+from skimage.morphology import opening, closing, disk
 from skimage.measure import regionprops, label
 
 from scipy import ndimage as ndi
@@ -46,12 +46,12 @@ if __name__ == '__main__':
 
     # Grayscale and Adaptive threshold
     img_blood_th = 1 - threshold_adaptive(
-        image=rgb2gray(img_blood), block_size=31, offset=.01)
+        image=rgb2gray(img_blood), block_size=29, offset=0.02)
     plot_image(img_blood_th)
 
     # Opening applied
-    img_blood_opening = opening(
-        image=img_blood_th, selem=disk(2))
+    img_blood_opening = closing(
+        image=img_blood_th, selem=disk(1))
 
     img_filled = ndi.binary_fill_holes(img_blood_opening)
     # plot_image(img_blood_opening)
@@ -61,18 +61,20 @@ if __name__ == '__main__':
     img_blood_lab = label(img_filled)
     regions = regionprops(img_blood_lab)
 
-    # Only numbers and letters are displayed
+    """
+    ratios = []
+    for region in regions:
+        ratios.append(region.area)
+
+    n, bins, patches = plt.hist(ratios, bins=10)
+    plt.show()
+    """
+
+    # Extract only bigger circles and half-circles
     regions_blood = []
     for region in regions:
-        bbox = region.bbox
-        h = bbox[2] - bbox[0]  # height
-        w = bbox[3] - bbox[1]  # width
-
-        # if (float(h) / w > .8 and h > 20) or h > 30:
-        #    regions_bloodborders.append(region)
-        # print region.centroid
-        # print region.area
-        # print region.perimeter
+        if region.area > 200:
+            regions_blood.append(region)
 
     print(len(regions_blood))
     plot_image(src=draw_regions(regions_blood, img_blood_th.shape))

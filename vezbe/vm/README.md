@@ -1,4 +1,4 @@
-### Instalacija virtualne maöine
+### Instalacija virtualne ma≈°ine
 
 1. Instalirati **Oracle VM VirtualBox (ver 5.x)**.
 
@@ -12,4 +12,17 @@
 
 6. Izabrati **Use an existing virtual hard disk file** i sa diska odabrati datoteku **ftn-ai-lab-2016-vm.vdi** -> Create.
 
-7. Pokrenuti AnacondaVM virtualnu maöinu.
+7. Pokrenuti **ftn-ai-lab-2016-vm** virtualnu ma≈°inu.
+
+#### Kredencijali korisnika
+
+*username*: student
+
+*password*: student
+
+### ≈†ta se nalazi u VM?
+
+* Linux Mint 17.3
+* Python 2.7 + Anaconda 4.2.0
+* Tensorflow 0.11
+* Keras (bleeding-edge verzija sa git-a)

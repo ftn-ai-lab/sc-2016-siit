@@ -1,83 +1,35 @@
-"""
-    @author:    SWF/2013   Dragutin Marjanovic
-    @email:     dmarjanovic94@gmail.com
-"""
+# author: Aleksandar Novakovic
 
-import matplotlib.pyplot as plt
-
-import numpy as np
-from skimage.color import rgb2gray
 from skimage.io import imread
-from skimage.filters import threshold_adaptive
+import numpy as np
+from matplotlib import pyplot as plt
+from skimage.color import rgb2gray
+from skimage.filters.thresholding import threshold_adaptive
 from skimage.morphology import opening, square
-from skimage.measure import regionprops, label
+from skimage.measure import label, regionprops
 
-
-# Utility function for displaying image
-def plot_image(src, gray=True):
-    if gray:
-        plt.imshow(src, 'gray')
-    else:
-        plt.imshow(src)
-    plt.show()
-
-
-# Utility funcion for regions drawing on pictures with given size
 def draw_regions(regs, img_size):
-    img_r = np.ndarray((img_size[0], img_size[1]), dtype='float32')
-
+    img = np.ndarray((img_size[0], img_size[1]), dtype='float64')
     for reg in regs:
         coords = reg.coords
         for coord in coords:
-            img_r[coord[0], coord[1]] = 1.
-
-    return img_r
-
+            img[coord[0]][coord[1]] = 1.
+    return img
 
 if __name__ == '__main__':
-
-    # Load 'barcode.jpg' image
-    img_barcode = imread('../../images/barcode.jpg')
-
-    # Show image
-    # plot_image(img_barcode, False)
-
-    # Grayscale and Adaptive threshold
-    img_barcode_th = 1 - threshold_adaptive(
-        image=rgb2gray(img_barcode), block_size=75, offset=.04)
-    # plot_image(img_barcode_th)
-
-    # Opening applied
-    img_barcode_opening = opening(
-        image=img_barcode_th, selem=square(3))
-
-    # plot_image(img_barcode_opening)
-
-    # Make image labeled and get regions
-    img_barcode_lab = label(img_barcode_opening)
-    regions = regionprops(img_barcode_lab)
-
-    # Display histogram
-    """
-    ratios = []
+    barcode_img = imread('./../../images/barcode.jpg')
+    barcode_gray = rgb2gray(barcode_img)
+    barcode_filtered = 1. - threshold_adaptive(barcode_gray, block_size=75, offset=0.04)
+    barcode_filtered = opening(barcode_filtered, selem=square(3))
+    labels = label(barcode_filtered)
+    regions = regionprops(labels)
+    num_regions = []
     for region in regions:
         bbox = region.bbox
-        h = bbox[2] - bbox[0]       # height
-        w = bbox[3] - bbox[1]       # width
-        ratios.append(float(h) / w)
-
-    n, bins, patches = plt.hist(ratios, bins=10)
+        height = bbox[2] - bbox[0]
+        width = bbox[3] - bbox[1]
+        if 25 < height < 45 and 1 <= float(height) / width <= 6 and (region.extent < 0.57 or region.extent > 0.80):
+            num_regions.append(region)
+    barcode_result = draw_regions(num_regions, barcode_gray.shape)
+    plt.imshow(barcode_result, 'gray')
     plt.show()
-    """
-
-    # Only numbers and letters are displayed
-    regions_num_letters = []
-    for region in regions:
-        bbox = region.bbox
-        h = bbox[2] - bbox[0]       # height
-        w = bbox[3] - bbox[1]       # width
-
-        if 1.4 < float(h) / w < 10.:
-            regions_num_letters.append(region)
-
-    plot_image(src=draw_regions(regions_num_letters, img_barcode_th.shape))

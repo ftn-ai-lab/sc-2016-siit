@@ -1,0 +1,4 @@
+class_name,class_label
+circles,0
+rectangles,1
+triangles,2
